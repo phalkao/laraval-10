@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\{
+    SupportController
+};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,6 +15,16 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get("/supports/listando", [SupportController::class, 'index'])->name('supports.listando');
+
+
+Route::resource("/supports", SupportController::class);
+
+
+Route::get("/contato", function () {
+    return view("site.contact");
+});
 
 Route::get('/', function () {
     return view('welcome');
