@@ -2,30 +2,28 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DTOs\{
+    CreateSupportDTO,
+    UpdateSupportDTO
+};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUpdateSupportRequest;
-use App\Models\Support;
+use App\Services\SupportService;
 use Illuminate\Http\Request;
 
 class SupportController extends Controller
 {
 
-    protected $model;
-
-    public function __construct(Support $support)
-    {
-        $this->model = $support;
-        
-    }
+    public function __construct(
+        protected SupportService $service
+    ) {}
     
     /**
      * Display a listing of the resource.   
      */
-    public function index(
-        Support $support
-    )
+    public function index(Request $request)
     {
-        $supports = $support->all();
+        $supports = $this->service->getAll($request->filter);
 
         return view("admin.supports.index", compact("supports"));
     }
@@ -43,10 +41,7 @@ class SupportController extends Controller
      */
     public function store(StoreUpdateSupportRequest $request)
     {
-        $data = $request->validated();
-        $data['status'] = 'A';
-        
-        $this->model->create($data);
+        $this->service->new(CreateSupportDTO::makeFromRequest($request));
 
         return redirect()->route('supports.index')->with('success','Cadastro realizado com sucesso!');
     }
@@ -54,9 +49,9 @@ class SupportController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string|int $id)
+    public function show(string $id)
     {
-        if(!$support = $this->model->find($id)){
+        if(!$support = $this->service->findOne($id)){
             return redirect()->back()->with('error','Registro não encontrado.');
         }
 
@@ -66,11 +61,11 @@ class SupportController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string|int $id)
+    public function edit(string $id)
     {
-        if(!$support = $this->model->where('id', $id)->first()){
+        if(!$support = $this->service->findOne($id)){
             return redirect()->back()->with('error','Registro não encontrado.');
-            }
+        }
 
         return view('admin.supports.edit', compact('support'));
     }
@@ -80,11 +75,9 @@ class SupportController extends Controller
      */
     public function update(StoreUpdateSupportRequest $request, string $id)
     {
-        if(!$support = $this->model->find($id)){
+        if(!$this->service->update(UpdateSupportDTO::makeFromRequest($request))){
             return redirect()->back()->with('error','Registro não encontrado.');
         }
-
-        $support->update($request->validated());
 
         return redirect()->route('supports.index')->with('success','Registro atualizado com sucesso.');
     }
@@ -94,11 +87,7 @@ class SupportController extends Controller
      */
     public function destroy(string $id)
     {
-        if(!$support = $this->model->find($id)){
-            return redirect()->back()->with('error','Registro não encontrado.');
-        }
-
-        $support->delete();
+        $this->service->delete($id);
 
         return redirect()->route('supports.index')->with('success','Registro deletado com sucesso.');
     }
