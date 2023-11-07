@@ -75,7 +75,9 @@ class SupportController extends Controller
      */
     public function update(StoreUpdateSupportRequest $request, string $id)
     {
-        if(!$this->service->update(UpdateSupportDTO::makeFromRequest($request))){
+        $support = $this->service->update(UpdateSupportDTO::makeFromRequest($request, $id));
+        
+        if(!$support){
             return redirect()->back()->with('error','Registro não encontrado.');
         }
 
