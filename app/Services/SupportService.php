@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\DTOs\{
+use App\DTOs\Supports\{
     CreateSupportDTO,
     UpdateSupportDTO
 };
