@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Enums\SupportStatus;
+
 return new class extends Migration
 {
     /**
@@ -14,7 +16,7 @@ return new class extends Migration
         Schema::create('supports', function (Blueprint $table) {
             $table->id();
             $table->string('subject')->unique();
-            $table->string('status', 1)->default('A');
+            $table->enum('status', array_column(SupportStatus::cases(), 'name'))->default('A');
             $table->text('body');
             $table->timestamps();
         });
