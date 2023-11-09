@@ -3,4 +3,4 @@
 use App\Http\Controllers\Api\SupportController;
 use Illuminate\Support\Facades\Route;
 
-Route::apiResource("/supports", SupportController::class);
+Route::apiResource("/supports", SupportController::class)->names('api.supports');
