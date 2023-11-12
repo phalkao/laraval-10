@@ -29,3 +29,8 @@ Route::get("/contato", function () {
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('/home', function () {
+    return view('admin.dashboard');
+})->middleware('auth');
