@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Listagem')
 
@@ -13,5 +13,6 @@
         :paginator="$supports" 
         :appends="$filters"
     />    
+
 @endsection
 
